@@ -29,17 +29,17 @@ public class JavalinApp {
             System.out.println("Table Created");
             databaseConnection.commit();
             Statement stmt2 = databaseConnection.createStatement();
-            ResultSet populateDataOne = stmt2.executeQuery("INSERT INTO Account (UserID, UserName, AccountBalance) VALUES (1, John, 100)");
+            ResultSet populateDataOne = stmt2.executeQuery("INSERT INTO Account (UserID, UserName, AccountBalance) VALUES (1, 'John', 100)");
             System.out.println("Data one inserted");
             Statement stmt3 = databaseConnection.createStatement();
-            ResultSet populateDataTwo = stmt3.executeQuery("INSERT INTO Account (UserID, UserName, AccountBalance) VALUES (2,Jane,500)");
+            ResultSet populateDataTwo = stmt3.executeQuery("INSERT INTO Account (UserID, UserName, AccountBalance) VALUES (2, 'Jane',500)");
             System.out.println("Data two inserted");
             Statement stmt4 = databaseConnection.createStatement();
             ResultSet loopData = stmt4.executeQuery("SELECT * FROM Account");
             // Loop through the data and print all data
             // Loop through the data and print all data
             while(loopData.next()) {
-                System.out.println("User ID" + loopData.getString("UserID") + " User Name" + loopData.getString("UserName") + " Account Balance" + loopData.getString("AccountBalance"));
+                System.out.println("User ID: " + loopData.getString("UserID") + " User Name: " + loopData.getString("UserName") + " Account Balance: " + loopData.getString("AccountBalance"));
             }
              
             // Clean up
