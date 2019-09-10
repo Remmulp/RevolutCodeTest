@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Application",
+            "request": "launch",
+            "mainClass": "Revolut.Application",
+            "projectName": "RevolutCode"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - JavalinApp",
+            "request": "launch",
+            "mainClass": "Revolut.JavalinApp",
+            "projectName": "RevolutCode"
+        }
+    ]
+}
