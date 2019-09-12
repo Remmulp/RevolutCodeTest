@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<h2>Make Transfer:</h2>
+<form method="post" action="/make-transfer">
+    Choose amount to transfer
+    <select name="Amount">
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+    <br>
+    Choose account to transfer to
+    <select name="Account">
+        <option value="John">John</option>
+        <option value="Jane">Jane</option>
+    </select>
+    <br>
+    <button>Submit</button>
+</form>
+<h2>Check your Balance:</h2>
+<form method="get" action="/check-balance">
+    Choose the balance to check
+    <select name="Balance">
+        <option value="John">John</option>
+        <option value="Jane">Jane</option>
+    </select>
+    <br>
+    <button>Submit</button>
+</form>
+<!-- <h1>Upload example</h1>
+<form method="post" action="/upload-example" enctype="multipart/form-data">
+    <input type="file" name="files" multiple>
+    <button>Submit</button>
+</form> -->
+</html>
