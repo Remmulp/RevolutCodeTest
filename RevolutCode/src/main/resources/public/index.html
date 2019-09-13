@@ -2,6 +2,7 @@
 <html>
 <meta charset="UTF-8">
 <img src="revolutLogo.png" width="550" height="150" alt="RevolutLogo">
+<div style="border:1px solid black;">
 <h2>Make Transfer:</h2>
 <form method="post" action="/make-transfer">
     Choose amount to transfer
@@ -18,19 +19,19 @@
     <br>
     <button>Submit</button>
 </form>
-<h2>Check your Balance:</h2>
-<form method="get" action="/check-balance">
-    Choose the balance to check
-    <select name="Balance">
-        <option value="John">John</option>
-        <option value="Jane">Jane</option>
-    </select>
-    <br>
-    <button>Submit</button>
+</div>
+<br>
+<div style="border:1px solid black;">
+<h2>Check your accounts Balances:</h2>
+<form method="post" action="/check-balance">
+    <button>Check Balance</button>
 </form>
+</div>
+<br>
+<div style="border:1px solid red;">
 <h2>Click below to exit</h2>
-<form method="get" action="/exit">
-    <br>
+<form method="post" action="/exit">
     <button>EXIT</button>
 </form>
+</div>
 </html>

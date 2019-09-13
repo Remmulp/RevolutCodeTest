@@ -5,57 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.javalin.Javalin;
 
 public class JavalinApp {
-    static Connection databaseConnection = null;
+    static Connection databaseConnection;
+
+    // Start the Javalin session
+    static Javalin app = Javalin.create(config -> {
+        config.addStaticFiles("/public");
+    }).start(8080);
 
     static ArrayList<String> BankAccount = new ArrayList<String>() {
     };
-
-    public static void doTransfer() throws SQLException {
-        int Amount = Integer.parseInt(BankAccount.get(0));
-        String Account = BankAccount.get(1);
-
-        // If account to transfer is John (else statment is vice versa)
-        System.out.println(Account.equals("John"));
-        if (Account.equals("John")) {
-            // Add the balance to Jane
-            PreparedStatement subtractBalanceFromJane = databaseConnection
-                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance + ? WHERE UserID = 1");
-            subtractBalanceFromJane.setObject(1, Amount);
-
-            // Subtract the balance from John
-            PreparedStatement addBalanceToJohn = databaseConnection
-                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance - ? WHERE UserID = 2");
-            addBalanceToJohn.setObject(1, Amount);
-
-            subtractBalanceFromJane.executeUpdate();
-            addBalanceToJohn.executeUpdate();
-        } else {
-            PreparedStatement subtractBalanceFromJohn = databaseConnection
-                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance - ? WHERE UserID = 1");
-            subtractBalanceFromJohn.setObject(1, Amount);
-
-            PreparedStatement addBalanceToJane = databaseConnection
-                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance + ? WHERE UserID = 2");
-            addBalanceToJane.setObject(1, Amount);
-
-            subtractBalanceFromJohn.executeUpdate();
-            addBalanceToJane.executeUpdate();
-        }
-
-        Statement checkTransfer = databaseConnection.createStatement();
-        ResultSet loopData = checkTransfer.executeQuery("SELECT * FROM Account");
-
-        // Loop through the data and print all data to show insertions to show transfer
-        // done correctly in console.
-        while (loopData.next()) {
-            System.out.println("User ID: " + loopData.getString("UserID") + " User Name: "
-                    + loopData.getString("UserName") + " Account Balance: " + loopData.getString("AccountBalance"));
-        }
-    }
 
     public static void main(String[] args) {
         // Driver connection
@@ -67,7 +30,7 @@ public class JavalinApp {
             return;
         }
 
-        // Connecting to in memory DB, does not exist create.
+        // Connecting to in memory DB, if does not exist create.
         try {
             databaseConnection = DriverManager.getConnection("jdbc:hsqldb:mem:mymemdb", "", "");
         } catch (SQLException e1) {
@@ -115,36 +78,85 @@ public class JavalinApp {
             e.printStackTrace();
         }
 
-        Javalin app = Javalin.create(config -> {
-            config.addStaticFiles("/public");
-        }).start(8080);
-
-        // Javalin amountToTransfer = app.get("/make-transfer", ctx -> {
-        // ctx.html(BankAccount.get(ctx.queryParam("Amount")));
-        // });
-
         // Add amount to transfer and account to transfer to, to the ArrayList
         app.post("/make-transfer", ctx -> {
             BankAccount.add(0, ctx.formParam("Amount"));
             BankAccount.add(1, ctx.formParam("Account"));
-            ctx.html("Your transfer has been complete");
+            ctx.html("Your transfer has been complete!");
             doTransfer();
         });
 
-        //On Exit, stop the Javalin session
+        // On Exit, stop the Javalin session
         app.post("/exit", ctx -> {
             ctx.html("You have exited the session");
             app.stop();
         });
-        
-        // app.get("/check-balance", ctx -> {
-        // ctx.html(BankAccount.get(ctx.queryParam("Balance")));
-        // });
 
-        /*
-         * app.post("/upload-example", ctx -> { ctx.uploadedFiles("files").forEach(file
-         * -> { FileUtil.streamToFile(file.getContent(), "upload/" +
-         * file.getFilename()); }); });
-         */
+        app.post("/check-balance", ctx -> {
+            Statement checkTransfer = databaseConnection.createStatement();
+            ResultSet loopData = checkTransfer.executeQuery("SELECT * FROM Account");
+            // Loop through the data and print all data to show insertions to show transfer
+            // done correctly in console.
+            while (loopData.next()) {
+                System.out.println("User ID: " + loopData.getString("UserID") + " User Name: "
+                        + loopData.getString("UserName") + " Account Balance: " + loopData.getString("AccountBalance"));
+            }
+
+            try {
+                Statement getBalance = databaseConnection.createStatement();
+                ResultSet getBalanceResult = getBalance.executeQuery("SELECT AccountBalance FROM Account");
+                List rowValues = new ArrayList();
+                while (getBalanceResult.next()) {
+                    rowValues.add(getBalanceResult.getString(1));
+                }
+                ctx.html("The balance for John is: " + (String) rowValues.get(0) + "\r\n" + "The balance for Jane is: "
+                        + (String) rowValues.get(1));
+            }
+
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void doTransfer() throws SQLException {
+        int Amount = Integer.parseInt(BankAccount.get(0));
+        String Account = BankAccount.get(1);
+
+        // If account to transfer is John (else statment is vice versa)
+        System.out.println(Account.equals("John"));
+        if (Account.equals("John")) {
+            // Add the balance to Jane
+            PreparedStatement subtractBalanceFromJane = databaseConnection
+                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance + ? WHERE UserID = 1");
+            subtractBalanceFromJane.setObject(1, Amount);
+
+            // Subtract the balance from John
+            PreparedStatement addBalanceToJohn = databaseConnection
+                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance - ? WHERE UserID = 2");
+            addBalanceToJohn.setObject(1, Amount);
+
+            subtractBalanceFromJane.executeUpdate();
+            addBalanceToJohn.executeUpdate();
+        } else {
+            PreparedStatement subtractBalanceFromJohn = databaseConnection
+                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance - ? WHERE UserID = 1");
+            subtractBalanceFromJohn.setObject(1, Amount);
+
+            PreparedStatement addBalanceToJane = databaseConnection
+                    .prepareStatement("UPDATE Account SET AccountBalance = AccountBalance + ? WHERE UserID = 2");
+            addBalanceToJane.setObject(1, Amount);
+
+            subtractBalanceFromJohn.executeUpdate();
+            addBalanceToJane.executeUpdate();
+        }
+        // Loop through the data and print all data to show insertions to show transfer
+        // done correctly in console.
+        Statement checkTransfer = databaseConnection.createStatement();
+        ResultSet loopData = checkTransfer.executeQuery("SELECT * FROM Account");
+        while (loopData.next()) {
+            System.out.println("User ID: " + loopData.getString("UserID") + " User Name: "
+                    + loopData.getString("UserName") + " Account Balance: " + loopData.getString("AccountBalance"));
+        }
     }
 }
