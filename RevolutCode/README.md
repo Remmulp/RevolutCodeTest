@@ -12,6 +12,9 @@ Coding test for Revolut API bank transfer for backend developer.
 3. Use the application for bank transfers and management.
 
 # Technologies used
+## Maven
+To handle depenancies and create a self contained project.
+
 ## Java
 Main lanagueage used.
 
