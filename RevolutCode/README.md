@@ -33,3 +33,8 @@ An in memory SQL database system for handling, storing and querying test data.
 
 ## HTML 
 Used in the creation of the webpage in order to interact with the overall system.
+
+# Improvements/ further work
+- To split out the 'Javalin.app' into other classes to remove the bulk of the work from this class.
+- To encapsulate certain methods and make them reuseable such as the database connection, SQL statment creation etc.
+- Implement full testing suite to the code for complete test coverage.
